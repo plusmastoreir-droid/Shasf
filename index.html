@@ -69,6 +69,7 @@ body{
     border:1px solid #555;
     border-radius:12px;
     box-shadow:0 0 40px rgba(255,255,255,.15);
+    max-width:90%;
 }
 
 h1{
@@ -80,8 +81,14 @@ h1{
 
 .subtitle{
     color:#aaa;
-    margin-bottom:30px;
+    margin-bottom:25px;
     font-size:15px;
+}
+
+#counter{
+    color:#ddd;
+    margin-bottom:25px;
+    font-size:18px;
 }
 
 .download-btn{
@@ -121,8 +128,9 @@ h1{
         دانلود فایل نصب برنامه
     </div>
 
-    <!-- لینک مورد نظر را به جای example.com قرار بده -->
-    <a href="https://drive.google.com/file/d/1fXFivRtdP0ehig60SgW_DXDKux-2oiAI/view?usp=drivesdk" target="_blank" class="download-btn">
+    <p id="counter">تعداد دانلود: ...</p>
+
+    <a href="#" onclick="openLink()" class="download-btn">
         دانلود
     </a>
 
@@ -130,6 +138,38 @@ h1{
         نسخه رسمی شهر فرش قزوین
     </div>
 </div>
+
+<script>
+const KEY = "shahrfarsh-qazvin-downloads";
+
+// نمایش تعداد دانلودها
+fetch(`https://countapi.mileshilliard.com/api/v1/get/${KEY}`)
+.then(res => res.json())
+.then(data => {
+    document.getElementById("counter").innerText =
+    "تعداد دانلود: " + (data.value || 0);
+})
+.catch(() => {
+    document.getElementById("counter").innerText =
+    "تعداد دانلود: 0";
+});
+
+// کلیک روی دکمه
+function openLink(){
+
+    fetch(`https://countapi.mileshilliard.com/api/v1/hit/${KEY}`)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("counter").innerText =
+        "تعداد دانلود: " + data.value;
+    });
+
+    window.open(
+        "https://drive.google.com/uc?export=download&id=1fXFivRtdP0ehig60SgW_DXDKux-2oiAI",
+        "_blank"
+    );
+}
+</script>
 
 </body>
 </html>

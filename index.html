@@ -179,12 +179,39 @@ transition:opacity .5s ease;
     background:#fff;
     box-shadow:0 0 10px #fff;
 }
+ .progress{
+    width:180px;
+    height:4px;
+    background:#222;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:25px;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:#fff;
+    animation:loading 2s linear forwards;
+}
+
+@keyframes loading{
+    from{
+        width:0%;
+    }
+    to{
+        width:100%;
+    }
+}
 </style>
 </head>
 
 <body>
 <div id="loader">
     <img src="logo.png" class="splash-logo">
+ <div class="progress">
+    <div class="progress-bar"></div>
+ </div>
 </div>
 <div class="bg"></div>
 <div class="noise"></div>

@@ -13,17 +13,23 @@
 }
 
 body{
-    width:100%;
-    height:100vh;
-    overflow:hidden;
     background:#000;
-    font-family:Tahoma,sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    color:#fff;
+    font-family:tahoma;
+    overflow-x:hidden;
 }
 
-/* پس زمینه متحرک */
+/* نوار بالا */
+.top-bar{
+    width:100%;
+    padding:8px 0;
+    text-align:center;
+    font-size:12px;
+    color:#aaa;
+    border-bottom:1px solid #333;
+}
+
+/* پس زمینه */
 .bg{
     position:fixed;
     inset:0;
@@ -32,86 +38,82 @@ body{
     radial-gradient(circle at 80% 30%, #444 0%, #000 30%),
     radial-gradient(circle at 40% 80%, #555 0%, #000 35%);
     filter:grayscale(100%);
-    animation:bgMove 12s infinite alternate ease-in-out;
+    animation:move 12s infinite alternate;
+    z-index:-2;
 }
 
-@keyframes bgMove{
-    from{
-        transform:scale(1) rotate(0deg);
-    }
-    to{
-        transform:scale(1.25) rotate(6deg);
-    }
+@keyframes move{
+    0%{transform:scale(1) rotate(0deg);}
+    100%{transform:scale(1.2) rotate(5deg);}
 }
 
-/* نویز */
 .noise{
     position:fixed;
     inset:0;
     opacity:.08;
-    background-image:
-    repeating-radial-gradient(circle,#fff 0 1px,transparent 2px 4px);
-    animation:flicker .12s infinite;
+    background-image:repeating-radial-gradient(circle,#fff 0 1px,transparent 2px 4px);
+    animation:flicker .15s infinite;
+    z-index:-1;
 }
 
 @keyframes flicker{
-    50%{
-        opacity:.14;
-    }
+    50%{opacity:.14;}
 }
 
+/* کادر اصلی */
 .container{
-    position:relative;
-    z-index:2;
+    max-width:500px;
+    margin:40px auto;
     text-align:center;
-    padding:40px;
-    background:rgba(0,0,0,.75);
-    border:1px solid #555;
-    border-radius:12px;
-    box-shadow:0 0 40px rgba(255,255,255,.15);
-    max-width:90%;
+    padding:20px;
 }
 
+/* عنوان */
 h1{
-    color:#fff;
-    margin-bottom:25px;
-    font-size:32px;
-    text-shadow:0 0 15px rgba(255,255,255,.5);
+    margin:20px 0;
+    font-size:28px;
+    text-shadow:0 0 10px #fff5;
 }
 
-.subtitle{
-    color:#aaa;
-    margin-bottom:25px;
-    font-size:15px;
+/* تریلر */
+.video-box video{
+    width:100%;
+    border-radius:10px;
+    border:1px solid #444;
 }
 
-#counter{
-    color:#ddd;
-    margin-bottom:25px;
-    font-size:18px;
+.slider-btns{
+    margin-top:10px;
 }
 
-.download-btn{
-    display:inline-block;
-    text-decoration:none;
+.slider-btns button{
     background:#fff;
     color:#000;
-    font-size:20px;
-    font-weight:bold;
-    padding:15px 45px;
+    border:none;
+    padding:8px 14px;
+    margin:0 5px;
+    border-radius:5px;
+}
+
+/* شمارنده */
+#counter{
+    margin:20px 0;
+    color:#ccc;
+}
+
+/* دکمه */
+.btn{
+    display:inline-block;
+    background:#fff;
+    color:#000;
+    padding:15px 40px;
     border-radius:8px;
-    transition:.3s;
+    text-decoration:none;
+    font-weight:bold;
 }
 
-.download-btn:hover{
-    transform:scale(1.08);
-    box-shadow:0 0 25px #fff;
-}
-
-.footer{
-    margin-top:20px;
-    color:#777;
-    font-size:13px;
+.btn:hover{
+    transform:scale(1.05);
 }
 </style>
 </head>
@@ -121,48 +123,74 @@ h1{
 <div class="bg"></div>
 <div class="noise"></div>
 
+<div class="top-bar">
+Made by Aghey | @shasf_gams
+</div>
+
 <div class="container">
-    <h1>شهر فرش قزوین</h1>
 
-    <div class="subtitle">
-        دانلود فایل نصب برنامه
+<h1>شهر فرش قزوین</h1>
+
+<!-- تریلر -->
+<div class="video-box">
+    <video id="trailer" controls></video>
+    <div class="slider-btns">
+        <button onclick="prevVideo()">◀</button>
+        <button onclick="nextVideo()">▶</button>
     </div>
+</div>
 
-    <p id="counter">تعداد دانلود: ...</p>
+<p id="counter">تعداد دانلود: ...</p>
 
-    <a href="#" onclick="openLink()" class="download-btn">
-        دانلود
-    </a>
+<a href="#" class="btn" onclick="openLink()">
+دانلود
+</a>
 
-    <div class="footer">
-        نسخه رسمی شهر فرش قزوین
-    </div>
 </div>
 
 <script>
 const KEY = "shahrfarsh-qazvin-downloads";
 
-// نمایش تعداد دانلودها
+const trailers = [
+    "trailer1.mp4",
+    "trailer2.mp4"
+];
+
+let index = 0;
+const player = document.getElementById("trailer");
+
+/* لود اولیه */
+function load(){
+    player.src = trailers[index];
+}
+load();
+
+/* بعدی */
+function nextVideo(){
+    index++;
+    if(index >= trailers.length) index = 0;
+    load();
+}
+
+/* قبلی */
+function prevVideo(){
+    index--;
+    if(index < 0) index = trailers.length - 1;
+    load();
+}
+
+/* شمارنده */
 fetch(`https://countapi.mileshilliard.com/api/v1/get/${KEY}`)
-.then(res => res.json())
-.then(data => {
+.then(r => r.json())
+.then(d => {
     document.getElementById("counter").innerText =
-    "تعداد دانلود: " + (data.value || 0);
-})
-.catch(() => {
-    document.getElementById("counter").innerText =
-    "تعداد دانلود: 0";
+    "تعداد دانلود: " + (d.value || 0);
 });
 
-// کلیک روی دکمه
+/* دانلود + شمارش */
 function openLink(){
 
-    fetch(`https://countapi.mileshilliard.com/api/v1/hit/${KEY}`)
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("counter").innerText =
-        "تعداد دانلود: " + data.value;
-    });
+    fetch(`https://countapi.mileshilliard.com/api/v1/hit/${KEY}`);
 
     window.open(
         "https://drive.google.com/uc?export=download&id=1fXFivRtdP0ehig60SgW_DXDKux-2oiAI",

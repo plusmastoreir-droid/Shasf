@@ -115,7 +115,7 @@ h1{
 .btn:hover{
     transform:scale(1.05);
 }
-.#loader{
+#loader{
 position:fixed;
 inset:0;
 background:#000;
@@ -147,7 +147,6 @@ opacity:1;
 <body>
 <div id="loader">
     <img src="logo.png" class="splash-logo">
-</div>
 </div>
 <div class="bg"></div>
 <div class="noise"></div>
@@ -204,7 +203,7 @@ const player = document.getElementById("trailer");
 function load(){
     player.src = trailers[index];
     player.load();
-}
+load();
     player.addEventListener("ended",()=>{
 
     index++;
@@ -225,6 +224,15 @@ function prevVideo(){
     load();
 }
 
+    function nextVideo(){
+    index++;
+
+    if(index >= trailers.length){
+        index = 0;
+    }
+
+    load();
+    }
 /* شمارنده */
 fetch(`https://countapi.mileshilliard.com/api/v1/get/${KEY}`)
 .then(r => r.json())

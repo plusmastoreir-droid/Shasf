@@ -160,6 +160,25 @@ opacity:1;
 #loader{
 transition:opacity .5s ease;
 }
+.dots{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:12px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#555;
+    transition:.3s;
+}
+
+.dot.active{
+    background:#fff;
+    box-shadow:0 0 10px #fff;
+}
 </style>
 </head>
 
@@ -181,11 +200,13 @@ Made by Aghey | @shasf_game Telegram
 <!-- تریلر -->
 <div class="video-box">
     <video id="trailer" controls></video>
+ <div id="dots" class="dots"></div>
     <div class="slider-btns">
         <button onclick="prevVideo()">◀</button>
         <button onclick="nextVideo()">▶</button>
     </div>
-</div>
+  
+ </div>
 
 <p id="counter">تعداد دانلود: ...</p>
 
@@ -212,20 +233,49 @@ const KEY = "shahrfarsh-qazvin-downloads";
 
 const trailers = [
     "trailer1.mp4",
-    "trailer2.mp4"
+    "trailer2.mp4",
+    "trailer3.mp4"
 ];
 
-let index = 0;
+let index = Math.floor(Math.random() * trailers.length);
 const player = document.getElementById("trailer");
-
+let touchStartX = 0;
+let touchEndX = 0;
 /* لود اولیه */
 function load(){
     player.src = trailers[index];
     player.load();
+    updateDots();
+}
+function updateDots(){
+    document.querySelectorAll(".dot").forEach((dot,i)=>{
+        dot.classList.toggle("active", i===index);
+    });
 }
 
+function createDots(){
+
+    trailers.forEach((_,i)=>{
+
+        const dot=document.createElement("div");
+        dot.className="dot";
+
+        if(i===index)
+            dot.classList.add("active");
+
+        dot.onclick=()=>{
+            index=i;
+            load();
+            player.play();
+            updateDots();
+        };
+
+        dots.appendChild(dot);
+    });
+
+}
 load();
-    
+    createDots();
     player.addEventListener("ended",()=>{
 
     index++;
@@ -272,7 +322,62 @@ function openLink(){
         "https://drive.google.com/uc?export=download&id=1fXFivRtdP0ehig60SgW_DXDKux-2oiAI",
         "_blank"
     );
+const dots = document.getElementById("dots");
+
+function createDots(){
+
+    dots.innerHTML = "";
+
+    trailers.forEach((_,i)=>{
+
+        const dot = document.createElement("div");
+
+        dot.className = "dot";
+
+        if(i===index){
+            dot.classList.add("active");
+        }
+
+        dot.onclick=()=>{
+            index=i;
+            load();
+            player.play();
+            updateDots();
+        };
+
+        dots.appendChild(dot);
+
+    });
+
 }
+
+function updateDots(){
+
+    document.querySelectorAll(".dot").forEach((dot,i)=>{
+
+        dot.classList.toggle("active",i===index);
+
+    });
+
+}
+}
+ player.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+player.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+
+    if (touchEndX < touchStartX - 50) {
+        nextVideo(); // کشیدن به چپ
+        player.play();
+    }
+
+    if (touchEndX > touchStartX + 50) {
+        prevVideo(); // کشیدن به راست
+        player.play();
+    }
+});
 </script>
 
 </body>

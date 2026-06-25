@@ -115,11 +115,25 @@ h1{
 .btn:hover{
     transform:scale(1.05);
 }
+.loader-logo{
+width:120px;
+height:120px;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+50%{
+transform:scale(1.15);
+opacity:.6;
+}
+    }
 </style>
 </head>
 
 <body>
-
+<div id="loader">
+    <img src="logo.png" class="loader-logo">
+</div>
 <div class="bg"></div>
 <div class="noise"></div>
 
@@ -162,15 +176,20 @@ const player = document.getElementById("trailer");
 /* لود اولیه */
 function load(){
     player.src = trailers[index];
+    player.load();
 }
-load();
+    player.addEventListener("ended",()=>{
 
-/* بعدی */
-function nextVideo(){
     index++;
-    if(index >= trailers.length) index = 0;
+
+    if(index >= trailers.length){
+        index = 0;
+    }
+
     load();
-}
+
+    player.play();
+});
 
 /* قبلی */
 function prevVideo(){
